@@ -1,40 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Wine Quality Testing</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wine Quality Tester</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Wine Quality Testing</h1>
-    <form id="uploadForm" action="http://ec2-34-229-201-175.compute-1.amazonaws.com:5000/predict" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" id="fileInput">
-        <input type="submit" value="Upload">
-    </form>
-    <p id="result" style="display: none;"></p>
+<body class="bg-light d-flex align-items-center justify-content-center" style="height: 100vh;">
+    <div class="container">
+        <h1 class="text-center mb-4" style="color: #5d1049;">Wine Quality Tester</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form id="uploadForm" action="http://ec2-50-19-12-235.compute-1.amazonaws.com:5000/predict" method="post" enctype="multipart/form-data" class="bg-white p-4 border rounded shadow">
+                    <div class="form-group">
+                        <label for="fileInput" class="h5">Upload wine data file:</label>
+                        <input type="file" name="file" id="fileInput" class="form-control-file">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Predict Quality</button>
+                </form>
+                <p id="result" class="mt-4 p-2 bg-success text-white text-center rounded d-none"></p>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.getElementById("uploadForm").addEventListener("submit", function(event) {
             event.preventDefault();
-            
-            // Extracting file input and creating FormData
             const fileInput = document.getElementById("fileInput");
             const file = fileInput.files[0];
             const formData = new FormData();
             formData.append("file", file);
 
-            // Making a POST request to the prediction endpoint
-            fetch("http://ec2-34-229-201-175.compute-1.amazonaws.com:5000/predict", {
+            fetch("http://ec2-50-19-12-235.compute-1.amazonaws.com:5000/predict", {
                 method: "POST",
                 body: formData
             })
             .then(response => response.json())
             .then(data => {
-                // Displaying the F1 score result
                 const resultElement = document.getElementById("result");
-                resultElement.innerHTML = "F1 Score: " + data.f1_score;
-                resultElement.style.display = "block";
+                resultElement.innerHTML = "Predicted F1 Score: " + data.f1_score;
+                resultElement.classList.remove('d-none');
             })
             .catch(error => console.error("Error:", error));
         });
     </script>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
